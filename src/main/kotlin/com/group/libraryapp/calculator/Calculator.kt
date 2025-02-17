@@ -1,7 +1,7 @@
 package com.group.libraryapp.calculator
 
 data class Calculator(
-  private var number: Int
+  var number: Int
 ) {
 
   fun add(operand: Int) {
