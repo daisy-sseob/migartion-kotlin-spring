@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.group.libraryapp.calculator.CalculatorJunitTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-02-17T14:01:13" hostname="sseob-mac-mini.local" time="0.005">
+  <properties/>
+  <testcase name="test1()" classname="com.group.libraryapp.calculator.CalculatorJunitTest" time="0.005"/>
+  <system-out><![CDATA[before each
+test 1
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
