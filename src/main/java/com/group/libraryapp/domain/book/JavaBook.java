@@ -7,6 +7,11 @@ import javax.persistence.Id;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+/**
+ * Kotlin code로 변경하였음.
+ * @see Book
+ */
+@Deprecated
 @Entity
 public class JavaBook {
 

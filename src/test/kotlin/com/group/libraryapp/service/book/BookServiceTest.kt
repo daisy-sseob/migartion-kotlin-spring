@@ -1,5 +1,6 @@
 package com.group.libraryapp.service.book
 
+import com.group.libraryapp.domain.book.Book
 import com.group.libraryapp.domain.book.JavaBook
 import com.group.libraryapp.domain.book.BookRepository
 import com.group.libraryapp.domain.user.User
@@ -53,7 +54,7 @@ class BookServiceTest @Autowired constructor(
   fun bookLoanTest() {
     
     // given
-    bookRepository.save(JavaBook("Effective Kotlin"))
+    bookRepository.save(Book("Effective Kotlin"))
     val savedUser = userRepository.save(User("김홍출", 30))
     val request = BookLoanRequest("김홍출", "Effective Kotlin")
 
@@ -74,7 +75,7 @@ class BookServiceTest @Autowired constructor(
   fun bookLoanFailTest() {
 
     // given
-    bookRepository.save(JavaBook("Effective Kotlin"))
+    bookRepository.save(Book("Effective Kotlin"))
     userRepository.save(User("김홍출", 30))
     val request = BookLoanRequest("김홍출", "Effective Kotlin")
     bookService.loanBook(request)
@@ -94,7 +95,7 @@ class BookServiceTest @Autowired constructor(
   fun returnBookTest() {
 
     // given
-    bookRepository.save(JavaBook("Effective Kotlin"))
+    bookRepository.save(Book("Effective Kotlin"))
     val savedUser = userRepository.save(User("핑구", 30))
     val loanRequest = BookLoanRequest("핑구", "Effective Kotlin")
     bookService.loanBook(loanRequest)
