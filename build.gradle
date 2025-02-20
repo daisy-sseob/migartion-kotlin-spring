@@ -4,6 +4,7 @@ plugins {
   id 'java'
   id 'org.jetbrains.kotlin.jvm' version '1.9.23' // todo 정리필요
   id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.23' // Kotlin + JPA 사용시 기본생성자가 없으므로 인해서 발생하는 문제를 해결해주는 플러그인
+  id 'org.jetbrains.kotlin.plugin.spring' version '1.9.23' // 상속을 활용한 Proxy가 필요한 Class가 있을 경우 open 키워드를 명시하지 않아도 되도록 도와주는 플러그인.
 }
 
 group = 'com.group'
