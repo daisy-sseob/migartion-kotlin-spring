@@ -23,7 +23,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-web'
   implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8' // todo 정리
   implementation 'org.jetbrains.kotlin:kotlin-reflect:1.9.23' // kotlin class reflect를 가능하게 하는 의존성
-  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3'
+  implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3' // jackson 라이브러리가 kotlin class 를 serialize, deserialize 할 수 있도록 도와주는 의존성
   implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
   implementation 'org.projectlombok:lombok:1.18.28'
   
