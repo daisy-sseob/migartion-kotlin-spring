@@ -9,6 +9,7 @@ import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
 import com.group.libraryapp.dto.book.request.BookLoanRequest
 import com.group.libraryapp.dto.book.request.BookRequest
 import com.group.libraryapp.dto.book.request.BookReturnRequest
+import com.group.libraryapp.util.fail
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -41,10 +42,9 @@ class BookServiceTest @Autowired constructor(
     bookService.saveBook(bookRequest)
     
     // then
-    val findByName = bookRepository.findByName(bookRequest.name)
+    val findByName: Book = bookRepository.findByName(bookRequest.name) ?: fail()
 
-    assertThat(findByName.isPresent).isTrue()
-    assertThat(findByName.get().name).isEqualTo(bookRequest.name)
+    assertThat(findByName.name).isEqualTo(bookRequest.name)
 
   }
 
