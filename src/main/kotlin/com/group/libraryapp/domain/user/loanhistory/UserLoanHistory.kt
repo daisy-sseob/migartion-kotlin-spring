@@ -14,7 +14,7 @@ class UserLoanHistory(
 
   val bookName: String,
 
-  var isReturn: Boolean,
+  var status: UserLoanStatus = UserLoanStatus.LOANED,
 
   @Id
   @GeneratedValue
@@ -23,7 +23,7 @@ class UserLoanHistory(
   ) {
 
   fun doReturn() {
-    this.isReturn = true
+    this.status = UserLoanStatus.RETURNED
   }
 
 }

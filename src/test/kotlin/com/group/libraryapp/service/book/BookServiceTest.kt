@@ -2,10 +2,12 @@ package com.group.libraryapp.service.book
 
 import com.group.libraryapp.domain.book.Book
 import com.group.libraryapp.domain.book.BookRepository
+import com.group.libraryapp.domain.book.BookType
 import com.group.libraryapp.domain.user.User
 import com.group.libraryapp.domain.user.UserRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
+import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
 import com.group.libraryapp.dto.book.request.BookLoanRequest
 import com.group.libraryapp.dto.book.request.BookRequest
 import com.group.libraryapp.dto.book.request.BookReturnRequest
@@ -36,7 +38,7 @@ class BookServiceTest @Autowired constructor(
   fun saveBookTest() {
     
     // given
-    val bookRequest = BookRequest("Effective kotlin")
+    val bookRequest = BookRequest("Effective kotlin", BookType.COMPUTER)
     
     // when
     bookService.saveBook(bookRequest)
@@ -45,6 +47,7 @@ class BookServiceTest @Autowired constructor(
     val findByName: Book = bookRepository.findByName(bookRequest.name) ?: fail()
 
     assertThat(findByName.name).isEqualTo(bookRequest.name)
+    assertThat(findByName.type).isEqualTo(bookRequest.type)
 
   }
 
@@ -53,9 +56,9 @@ class BookServiceTest @Autowired constructor(
   fun bookLoanTest() {
     
     // given
-    bookRepository.save(Book("Effective Kotlin"))
+    val savedBook = bookRepository.save(Book.fixture())
     val savedUser = userRepository.save(User("김홍출", 30))
-    val request = BookLoanRequest("김홍출", "Effective Kotlin")
+    val request = BookLoanRequest(savedUser.name, savedBook.name)
 
     // when
     bookService.loanBook(request)
@@ -65,7 +68,7 @@ class BookServiceTest @Autowired constructor(
     assertThat(findAll).hasSize(1)
     assertThat(findAll[0].bookName).isEqualTo(request.bookName)
     assertThat(findAll[0].user.id).isEqualTo(savedUser.id)
-    assertThat(findAll[0].isReturn).isFalse()
+    assertThat(findAll[0].status).isEqualTo(UserLoanStatus.LOANED)
 
   }
   
@@ -74,13 +77,13 @@ class BookServiceTest @Autowired constructor(
   fun bookLoanFailTest() {
 
     // given
-    bookRepository.save(Book("Effective Kotlin"))
-    userRepository.save(User("김홍출", 30))
-    val request = BookLoanRequest("김홍출", "Effective Kotlin")
+    val savedBook = bookRepository.save(Book.fixture())
+    val savedUser = userRepository.save(User("김홍출", 30))
+    val request = BookLoanRequest(savedUser.name, savedBook.name)
     bookService.loanBook(request)
 
     // when
-    val anotherReq = BookLoanRequest("핑구", "Effective Kotlin")
+    val anotherReq = BookLoanRequest("핑구", savedBook.name)
     
     // then
     val exception: IllegalArgumentException = assertThrows<IllegalArgumentException>({bookService.loanBook(anotherReq)})
@@ -94,12 +97,12 @@ class BookServiceTest @Autowired constructor(
   fun returnBookTest() {
 
     // given
-    bookRepository.save(Book("Effective Kotlin"))
+    val savedBook = bookRepository.save(Book.fixture())
     val savedUser = userRepository.save(User("핑구", 30))
-    val loanRequest = BookLoanRequest("핑구", "Effective Kotlin")
+    val loanRequest = BookLoanRequest(savedUser.name, savedBook.name)
     bookService.loanBook(loanRequest)
     
-    val request = BookReturnRequest("핑구", "Effective Kotlin")
+    val request = BookReturnRequest(savedUser.name, savedBook.name)
 
     // when
     bookService.returnBook(request)
@@ -107,7 +110,7 @@ class BookServiceTest @Autowired constructor(
     // then
     val findAll = userLoanHistoryRepository.findAll()
     assertThat(findAll).hasSize(1)
-    assertThat(findAll[0].isReturn).isTrue()
+    assertThat(findAll[0].status).isEqualTo(UserLoanStatus.RETURNED)
 
   }
 }
