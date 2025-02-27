@@ -26,6 +26,12 @@ class UserLoanHistory(
     this.status = UserLoanStatus.RETURNED
   }
 
+  companion object {
+    fun fixture(user: User, bookName: String, status: UserLoanStatus): UserLoanHistory? {
+      return UserLoanHistory(user, bookName, status)
+    }
+  }
+
 }
 
 

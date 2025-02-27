@@ -2,6 +2,9 @@ package com.group.libraryapp.service.user
 
 import com.group.libraryapp.domain.user.User
 import com.group.libraryapp.domain.user.UserRepository
+import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory
+import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
+import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
 import com.group.libraryapp.dto.user.request.UserCreateRequest
 import com.group.libraryapp.dto.user.request.UserUpdateRequest
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
@@ -17,6 +20,7 @@ class UserServiceTest @Autowired constructor(
 
   private val userRepository: UserRepository,
   private val userService: UserService,
+  private val userLoanHistoryRepository: UserLoanHistoryRepository,
 
   ) {
 
@@ -103,6 +107,48 @@ class UserServiceTest @Autowired constructor(
     assertThat(findAll).isEmpty()
 
 
+  }
+
+  @Test
+  @DisplayName("대출 기록이 없는 유저도 응답에 포함된다.")
+  fun getUserLoanHistoriesTest() {
+    // given
+    userRepository.save(User("user", null))
+    
+    // when
+    val results = userService.getUserLoanHistories()
+
+    // then
+    assertThat(results).hasSize(1)
+    assertThat(results[0].name).isEqualTo("user")
+    assertThat(results[0].books).isEmpty()
+    
+  }
+  
+  @Test
+  @DisplayName("대출 기록이 없는 유저도 응답에 포함된다.")
+  fun getUserLoanHistoriesTest2() {
+    // given
+    val savedUser: User = userRepository.save(User("user", null))
+    
+    userLoanHistoryRepository.saveAll(listOf(
+      UserLoanHistory.fixture(savedUser, "book1", UserLoanStatus.LOANED),
+      UserLoanHistory.fixture(savedUser, "book2", UserLoanStatus.LOANED),
+      UserLoanHistory.fixture(savedUser, "book3", UserLoanStatus.RETURNED),
+    ))
+
+    // when
+    val results = userService.getUserLoanHistories()
+ 
+    // then
+    assertThat(results).hasSize(1)
+    assertThat(results[0].name).isEqualTo("user")
+    assertThat(results[0].books).isNotEmpty()
+    assertThat(results[0].books).hasSize(3)
+    assertThat(results[0].books).extracting("name").containsExactlyInAnyOrder("book1", "book2", "book3")
+    assertThat(results[0].books).extracting("isReturn").containsExactlyInAnyOrder(false, false, true)
+    
+    
   }
   
 }
