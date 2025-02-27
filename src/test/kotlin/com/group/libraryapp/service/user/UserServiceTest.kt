@@ -27,6 +27,7 @@ class UserServiceTest @Autowired constructor(
   // 각 테스트에 대한 DB 자원 영향을 받지 않게 하기 위해서.
   @AfterEach
   fun clean() {
+    print("=========== clean ===========")
     userRepository.deleteAll()
   }
 
@@ -147,7 +148,6 @@ class UserServiceTest @Autowired constructor(
     assertThat(results[0].books).hasSize(3)
     assertThat(results[0].books).extracting("name").containsExactlyInAnyOrder("book1", "book2", "book3")
     assertThat(results[0].books).extracting("isReturn").containsExactlyInAnyOrder(false, false, true)
-    
     
   }
   
