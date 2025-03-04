@@ -30,7 +30,11 @@ class UserLoanHistory(
   }
 
   companion object {
-    fun fixture(user: User, bookName: String, status: UserLoanStatus): UserLoanHistory? {
+    fun fixture(
+      user: User,
+      bookName: String,
+      status: UserLoanStatus = UserLoanStatus.LOANED): UserLoanHistory? {
+      
       return UserLoanHistory(user, bookName, status)
     }
   }
