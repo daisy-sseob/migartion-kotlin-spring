@@ -1,7 +1,7 @@
 package com.group.libraryapp.service.user
 
 import com.group.libraryapp.domain.user.User
-import com.group.libraryapp.domain.user.UserRepository
+import com.group.libraryapp.domain.user.UserJpaRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
@@ -18,7 +18,7 @@ import java.util.*
 @SpringBootTest
 class UserServiceTest @Autowired constructor(
 
-  private val userRepository: UserRepository,
+  private val userJpaRepository: UserJpaRepository,
   private val userService: UserService,
   private val userLoanHistoryRepository: UserLoanHistoryRepository,
 
@@ -28,7 +28,7 @@ class UserServiceTest @Autowired constructor(
   @AfterEach
   fun clean() {
     print("=========== clean ===========")
-    userRepository.deleteAll()
+    userJpaRepository.deleteAll()
   }
 
   @Test
@@ -41,7 +41,7 @@ class UserServiceTest @Autowired constructor(
     userService.saveUser(req)
 
     // then
-    val users: List<User> = userRepository.findAll()
+    val users: List<User> = userJpaRepository.findAll()
 
     assertThat(users).hasSize(1)
     assertThat(users[0].name).isEqualTo("A")
@@ -54,7 +54,7 @@ class UserServiceTest @Autowired constructor(
   fun getUsersTest() {
 
     // given
-    userRepository.saveAll(
+    userJpaRepository.saveAll(
       listOf(
         User("A", 10),
         User("B", 16),
@@ -79,14 +79,14 @@ class UserServiceTest @Autowired constructor(
   fun updateUserNameTest() {
 
     // given
-    val user = userRepository.save(User("A", 10))
+    val user = userJpaRepository.save(User("A", 10))
     val request = UserUpdateRequest(user.id, "B")
 
     // when
     userService.updateUserName(request)
 
     // then
-    val findUser: Optional<User> = userRepository.findById(user.id)
+    val findUser: Optional<User> = userJpaRepository.findById(user.id)
 
     assertThat(findUser.isPresent).isTrue
     assertThat(findUser.get().name).isEqualTo("B")
@@ -97,13 +97,13 @@ class UserServiceTest @Autowired constructor(
   fun deleteUserTest() {
     
     // given
-    val user = userRepository.save(User("A", 10))
+    val user = userJpaRepository.save(User("A", 10))
     
     // when
     userService.deleteUser("A")
     
     // then
-    val findAll = userRepository.findAll()
+    val findAll = userJpaRepository.findAll()
 
     assertThat(findAll).isEmpty()
 
@@ -114,7 +114,7 @@ class UserServiceTest @Autowired constructor(
   @DisplayName("대출 기록이 없는 유저도 응답에 포함된다.")
   fun getUserLoanHistoriesTest() {
     // given
-    userRepository.save(User("user", null))
+    userJpaRepository.save(User("user", null))
     
     // when
     val results = userService.getUserLoanHistories()
@@ -130,7 +130,7 @@ class UserServiceTest @Autowired constructor(
   @DisplayName("대출 기록이 없는 유저도 응답에 포함된다.")
   fun getUserLoanHistoriesTest2() {
     // given
-    val savedUser: User = userRepository.save(User("user", null))
+    val savedUser: User = userJpaRepository.save(User("user", null))
     
     userLoanHistoryRepository.saveAll(listOf(
       UserLoanHistory.fixture(savedUser, "book1", UserLoanStatus.LOANED),
