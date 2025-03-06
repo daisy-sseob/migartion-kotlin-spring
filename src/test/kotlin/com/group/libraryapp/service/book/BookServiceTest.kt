@@ -4,7 +4,7 @@ import com.group.libraryapp.domain.book.Book
 import com.group.libraryapp.domain.book.BookRepository
 import com.group.libraryapp.domain.book.BookType
 import com.group.libraryapp.domain.user.User
-import com.group.libraryapp.domain.user.UserRepository
+import com.group.libraryapp.domain.user.UserJpaRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistory
 import com.group.libraryapp.domain.user.loanhistory.UserLoanHistoryRepository
 import com.group.libraryapp.domain.user.loanhistory.UserLoanStatus
@@ -25,13 +25,13 @@ import org.springframework.boot.test.context.SpringBootTest
 class BookServiceTest @Autowired constructor(
   private val bookService: BookService,
   private val bookRepository: BookRepository,
-  private val userRepository: UserRepository,
+  private val userJpaRepository: UserJpaRepository,
   private val userLoanHistoryRepository: UserLoanHistoryRepository,) {
 
   @AfterEach
   fun clear() {
     bookRepository.deleteAll()
-    userRepository.deleteAll()
+    userJpaRepository.deleteAll()
   }
 
   @Test
@@ -58,7 +58,7 @@ class BookServiceTest @Autowired constructor(
     
     // given
     val savedBook = bookRepository.save(Book.fixture())
-    val savedUser = userRepository.save(User("김홍출", 30))
+    val savedUser = userJpaRepository.save(User("김홍출", 30))
     val request = BookLoanRequest(savedUser.name, savedBook.name)
 
     // when
@@ -79,7 +79,7 @@ class BookServiceTest @Autowired constructor(
 
     // given
     val savedBook = bookRepository.save(Book.fixture())
-    val savedUser = userRepository.save(User("김홍출", 30))
+    val savedUser = userJpaRepository.save(User("김홍출", 30))
     val request = BookLoanRequest(savedUser.name, savedBook.name)
     bookService.loanBook(request)
 
@@ -99,7 +99,7 @@ class BookServiceTest @Autowired constructor(
 
     // given
     val savedBook = bookRepository.save(Book.fixture())
-    val savedUser = userRepository.save(User("핑구", 30))
+    val savedUser = userJpaRepository.save(User("핑구", 30))
     val loanRequest = BookLoanRequest(savedUser.name, savedBook.name)
     bookService.loanBook(loanRequest)
     
@@ -120,7 +120,7 @@ class BookServiceTest @Autowired constructor(
   fun countLoanedBookTest() {
     
     // given
-    val savedUser = userRepository.save(User("핑구", null))
+    val savedUser = userJpaRepository.save(User("핑구", null))
     userLoanHistoryRepository.saveAll(
       listOf(
         UserLoanHistory.fixture(savedUser, "java"),
@@ -160,7 +160,7 @@ class BookServiceTest @Autowired constructor(
     
   }
 
-  private fun assertCount(results: List<BookStatResponse>, type: BookType, count: Int) {
+  private fun assertCount(results: List<BookStatResponse>, type: BookType, count: Long) {
     assertThat(results.first {result -> result.type == type}.count).isEqualTo(count)
   }
   

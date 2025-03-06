@@ -1,17 +1,17 @@
 package com.group.libraryapp.domain.user
 
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
-
-interface UserRepository : JpaRepository<User, Long> {
-
+interface UserRepository {
+  
+  fun save(newUser: User): User
+  
+  fun findAll(): List<User>
+  
   fun findByName(name: String): User?
   
-  @Query("""
-    SELECT distinct u
-    FROM User u 
-    LEFT JOIN FETCH u.userLoanHistories
-  """)
-  fun findAllWithHistory(): List<User>
+  fun findByIdOrThrow(id: Long?): User
   
+  fun delete(user: User)
+  
+  fun findAllWithHistory(): List<User>
+
 }
